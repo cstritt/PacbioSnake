@@ -1,0 +1,54 @@
+Bootstrap: docker
+From: condaforge/mambaforge:23.1.0-1
+
+%files
+    conda-linux-64.lock
+
+%post
+
+    export PATH=/opt/conda/bin:$PATH
+
+    mamba create --name pb_assembly --file conda-linux-64.lock
+    mamba clean -afy
+
+    apt-get clean all
+    apt-get update
+    apt-get upgrade -y
+    apt-get install -y build-essential libc6-dev zlib1g-dev less
+    apt-get clean
+    apt-get purge
+
+    git clone --depth 1 https://github.com/yfukasawa/LongQC.git
+    cd LongQC/minimap2-coverage && make
+
+    # Install mash
+    apt-get install -y mash
+
+    # Install polypolish
+    wget https://github.com/rrwick/Polypolish/releases/download/v0.5.0/polypolish-linux-x86_64-musl-v0.5.0.tar.gz
+    tar -xf polypolish-linux-x86_64-musl-v0.5.0.tar.gz -C /opt/conda/bin
+    rm polypolish-linux-x86_64-musl-v0.5.0.tar.gz
+
+    # Install progressiveCactus
+    wget https://github.com/ComparativeGenomicsToolkit/cactus/releases/download/v2.6.0/cactus-bin-v2.6.0.tar.gz
+    tar -xf cactus-bin-v2.6.0.tar.gz -C /opt/conda/bin
+    rm cactus-bin-v2.6.0.tar.gz
+    
+    # set to whatever your conda path is, I usually install to /opt
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
+    echo "conda activate pb_assembly" >> $SINGULARITY_ENVIRONMENT
+
+
+%environment
+
+    export PATH="/opt/conda/bin:/usr/local/bin:/usr/bin:/bin:"
+    unset CONDA_DEFAULT_ENV
+    export ANACONDA_HOME=/opt/conda
+    export PATH=LongQC/minimap2-coverage:$PATH
+
+%help
+
+%runscript
+    exec /bin/bash "$@"
+%startscript
+    exec /bin/bash "$@"

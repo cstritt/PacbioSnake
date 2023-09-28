@@ -1,0 +1,101 @@
+
+samples = [
+"PB000150", # whichever reference
+"PB000152",
+"PB000153",
+"PB000155", # Basal strain in both ML SNP tree and tip dated BEAST tree (P034)
+#"PB000175", # ignore outgroup for variant calling, to avoid complications with nested variants
+"PB000177",
+"PB000178",
+"PB000180",
+"PB000182",
+"PB000183",
+"PB000184",
+"PB000186",
+"PB000187",
+"PB000189",
+"PB000190",
+"PB000191",
+"PB000192",
+#"PB000193",
+"PB000194"
+]
+
+rule all:
+    input:
+        "results/vg/bernese.variants.vcf",
+        "results/raxml-ng/core_gene_alignment.aln.raxml.bestTree"
+
+rule combine_assemblies:
+    input: expand('/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/workflows/assemblySMK/results/{sample}/assembly.circularized.renamed.fasta', sample = samples)
+    output: 
+        fasta = "results/single_contig_assemblies.fasta",
+        discarded = "results/discarded_assemblies.txt"
+    conda: "env.yaml"
+    shell:
+        """
+        python ./combine_assemblies.py {input}
+
+        """
+    run:
+        import sys
+        from Bio import SeqIO
+
+        fasta_handle = open(output.fasta, "w")
+        discarded = open(output.discarded, "w")
+
+        for ASSEMBLY in input:
+                            
+            records = SeqIO.parse(ASSEMBLY, "fasta")
+            if len(records) > 1:
+                discarded.write(ASSEMBLY + '\n')
+
+            else:
+                rec = next(records)
+                SeqIO.write(rec, fasta_handle, "fasta")
+
+        fasta_handle.close()
+        discarded.close()  
+
+
+rule pggb:
+    input: "results/single_contig_assemblies.fasta"
+    output: "results/pggb/bernese.smooth.final.gfa"
+    threads: 20
+    params:
+        nr_strains = len(samples)
+    singularity: "./pggb_latest.sif"
+
+    shell:
+        """
+        bgzip {input}
+        samtools faidx {input}.gz
+
+        pggb -i {input}.gz \
+        -o ./results/pggb \
+        -t {threads} \
+        -n {params.nr_strains} \
+        -p 99 \
+        -s 5k
+
+        cp results/pggb/*smooth.final.gfa {output}
+
+    """
+
+rule call_variants:
+    input: "results/pggb/bernese.smooth.final.gfa"
+    output: "results/vg/bernese.variants.vcf"
+    params:
+        reference = "PB000155_1"
+    singularity: "./pggb_latest.sif"
+
+    shell:
+        """
+        vg deconstruct {input} -d1 -e \
+          -p {params.reference} \
+          -t {threads} \
+          > {output}
+
+        """
+
+

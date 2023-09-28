@@ -1,0 +1,18 @@
+##############################
+#
+##############################
+
+samples: samples.tsv
+
+project_directory: ./results
+output_prefix: pb_bernese
+
+ref:
+  genome_size: 4.4m
+  gbf: resources/H37Rv.gbf
+
+threads: 4
+
+keep_intermediate: "Yes"
+
+mapreads: "No"

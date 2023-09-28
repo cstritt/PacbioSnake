@@ -1,0 +1,23 @@
+name: pb_assembly
+channels:
+  - bioconda
+  - r
+  - defaults
+dependencies:
+  - flye
+  - samtools
+  - minimap2
+  - circlator
+  - prokka
+  - numpy
+  - scipy
+  - matplotlib
+  - scikit-learn
+  - pandas
+  - jinja2
+  - h5py
+  - pysam
+  - edlib
+  - python-edlib
+  - biopython
+prefix: /home/cristobal/anaconda3/envs/pb_assembly

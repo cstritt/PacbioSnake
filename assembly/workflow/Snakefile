@@ -1,0 +1,34 @@
+
+containerized: "container/assemblySMK.sif"
+
+include: "rules/common.smk"
+
+include: "rules/readQC.smk"
+
+include: "rules/assemble.smk"
+
+include: "rules/circularize.smk"
+
+include: "rules/annotate.smk"
+
+include: "rules/summarize.smk"
+
+if config["mapreads"] == "yes":
+
+    include: "rules/mapreads.smk"
+
+    rule all:
+        input:
+            "results/read_summaries.tsv",
+            "results/assembly_summaries.tsv", 
+            expand("results/{sample}/prokka/{sample}.gff", sample = samples.keys()),
+            expand("results/{sample}/remapping/shortreads.bam", sample = samples.keys()),
+            expand("results/{sample}/remapping/longreads.bam", sample = samples.keys())
+
+else:
+    rule all:
+        input:
+            "results/read_summaries.tsv",
+            "results/assembly_summaries.tsv", 
+            expand("results/{sample}/prokka/{sample}.gff", sample = samples.keys())
+
