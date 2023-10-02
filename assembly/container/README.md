@@ -1,17 +1,4 @@
 
-Problem: 1.6 gb container on gitlab? Building or loading container requires sudo...
-
-
-```
-sudo singularity build assemblySC.sif assemblySC.def
-```
-
-
-
-
-
-
-
 # Create versioned direct file and locked dependency file (https://pythonspeed.com/articles/conda-dependency-management/)
 environment.yml: versioned main dependencies 
 conda-lock.yml: locked subdependencies
@@ -24,7 +11,6 @@ mamba install \
     samtools \
     minimap2 \
     circlator \
-    panaroo \
     prokka \
     numpy \
     scipy \
@@ -47,3 +33,9 @@ conda env update --file environment.yml --prune
 # Create locked version
 conda-lock --mamba -f environment.yml -p linux-64
 conda-lock render -p linux-64 # allows using mamba create --file conda-linux-64.lock
+
+Problem: 1.6 gb container on gitlab? Building or loading container requires sudo...
+
+```
+sudo singularity build assemblySC.sif assemblySC.def
+```

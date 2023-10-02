@@ -1,8 +1,9 @@
-name: pb_assembly
+name: assemblySC
 channels:
+  - defaults
+  - conda-forge
   - bioconda
   - r
-  - defaults
 dependencies:
   - flye
   - samtools
@@ -20,4 +21,7 @@ dependencies:
   - edlib
   - python-edlib
   - biopython
-prefix: /home/cristobal/anaconda3/envs/pb_assembly
+  - ca-certificates
+  - certifi
+  - openssl
+prefix: /home/cristobal/anaconda3/envs/assemblySC

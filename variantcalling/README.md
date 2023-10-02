@@ -3,23 +3,18 @@
 ## assemblies.txt
 
 
-
-
-## config.yaml
+## config/config.yaml
 ```yaml
 
-samples: samples.inhouse.hifi.test.csv
-
-results_directory: ./results
-output_prefix: pb_bernese
-
-ref:
-  genome_size: 4.4m
-  gbf: resources/H37Rv.gbf
+reference: 
 
 threads: 4
 
-keep_intermediate: "Yes"
+output_dir: ./results
+
+pggb:
+  p: 99
+  s: 5k
 
 ```
 

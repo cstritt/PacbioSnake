@@ -1,4 +1,4 @@
-configfile: "config.yaml"
+configfile: "config/config.yaml"
 
 class sample:
     def __init__(self, fields):

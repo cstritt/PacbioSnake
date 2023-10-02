@@ -1,5 +1,5 @@
 
-rule mapreads:
+rule circlator_mapreads:
     input: 
         assembly = 'results/{sample}/assembly.fasta',
         reads = lambda wildcards: expand(samples[wildcards.sample].longread_fastq)
@@ -13,7 +13,7 @@ rule mapreads:
 
         """
 
-rule bam2reads:
+rule circlator_bam2reads:
     input: "results/{sample}/circlator/01.mapreads.bam"
     output: "results/{sample}/circlator/02.bam2reads.fasta"
     params:
@@ -24,7 +24,7 @@ rule bam2reads:
 
         """
 
-rule localassembly:
+rule circlator_localassembly:
     input: "results/{sample}/circlator/02.bam2reads.fasta"
     output: "results/{sample}/circlator/03.assemble/assembly.fasta"
     params:
@@ -36,7 +36,7 @@ rule localassembly:
 
         """
 
-rule merge:
+rule circlator_merge:
     input: 
         assembly = 'results/{sample}/assembly.fasta',
         localassembly = "results/{sample}/circlator/03.assemble/assembly.fasta"
@@ -50,7 +50,7 @@ rule merge:
 
         """
 
-rule clean:
+rule circlator_clean:
     input: "results/{sample}/circlator/04.merge.fasta"
     output: "results/{sample}/circlator/05.clean.fasta"
     params:
@@ -61,7 +61,7 @@ rule clean:
 
         """
 
-rule fixstart:
+rule circlator_fixstart:
     input: "results/{sample}/circlator/05.clean.fasta"
     output: "results/{sample}/circlator/06.fixstart.fasta"
     params:

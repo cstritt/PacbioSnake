@@ -31,32 +31,13 @@ rule combine_assemblies:
     output: 
         fasta = "results/single_contig_assemblies.fasta",
         discarded = "results/discarded_assemblies.txt"
-    conda: "env.yaml"
+    conda: "config/biopython.yaml"
     shell:
         """
-        python ./combine_assemblies.py {input}
+        python workflow/scripts/combine_assemblies.py {input}
 
         """
-    run:
-        import sys
-        from Bio import SeqIO
-
-        fasta_handle = open(output.fasta, "w")
-        discarded = open(output.discarded, "w")
-
-        for ASSEMBLY in input:
-                            
-            records = SeqIO.parse(ASSEMBLY, "fasta")
-            if len(records) > 1:
-                discarded.write(ASSEMBLY + '\n')
-
-            else:
-                rec = next(records)
-                SeqIO.write(rec, fasta_handle, "fasta")
-
-        fasta_handle.close()
-        discarded.close()  
-
+    
 
 rule pggb:
     input: "results/single_contig_assemblies.fasta"

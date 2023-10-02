@@ -1,0 +1,11 @@
+
+reference: 
+
+threads: 4
+
+output_dir: ./results
+
+pggb:
+  p: 99
+  s: 5k
+
