@@ -1,5 +1,13 @@
 # Variant calling workflow
 
+
+
+
+## container
+```
+singularity pull docker://ghcr.io/pangenome/pggb:latest
+```
+
 ## assemblies.txt
 
 

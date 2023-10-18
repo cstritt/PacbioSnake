@@ -1,11 +1,13 @@
 
 rule flye:
   input: lambda wildcards: samples[wildcards.sample].longread_fastq
-  output: "results/{sample}/assembly.fasta", "results/{sample}/assembly_info.txt"
-  threads: config["threads"]
+  output: 
+    config["outdir"] + "/{sample}/flye/assembly.fasta", 
+    config["outdir"] + "/{sample}/flye/assembly_info.txt"
+  threads: config["threads_per_job"]
   params:
     genome_size = config["ref"]["genome_size"],
-    outdir = "results/{sample}"
+    outdir = config["outdir"] + "/{sample}/flye"
 
   shell:
     """
@@ -15,4 +17,3 @@ rule flye:
       --threads {threads} \
       --out-dir {params.outdir}
     """
-

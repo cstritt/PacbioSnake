@@ -9,7 +9,7 @@ dependencies:
   - samtools
   - minimap2
   - circlator
-  - prokka
+  - bakta
   - numpy
   - scipy
   - matplotlib

@@ -1,6 +1,7 @@
+
 rule read_summary:
-    input: expand("results/{sample}/longqc/QC_vals_longQC_sampleqc.json", sample = samples.keys())
-    output: "results/read_summaries.tsv"
+    input: expand("{outdir}/{sample}/longqc/QC_vals_longQC_sampleqc.json", outdir = config["outdir"], sample = samples.keys())
+    output: config["outdir"]  + "/read_summaries.tsv"
     run:
         import json
 
@@ -51,14 +52,16 @@ rule read_summary:
 
 
 rule assembly_summaries:
-  input: expand("results/{sample}/assembly_info.txt", sample = samples.keys())
-  output: "results/assembly_summaries.tsv"
+  input: expand("{outdir}/{sample}/assembly_info.txt", outdir = config["outdir"], sample = samples.keys())
+  output: 
+    summaries = config["outdir"] + "/assembly_summaries.tsv",
+    single_contig_assemblies = config["outdir"] + "/single_contig_samples.txt"
   run:
 
     header = ""
-    outfile = open(output[0], "w")
+    outfile = open(output.summaries, "w")
 
-    outfile_single_contigs = open("results/single_contig_samples.txt", "w")
+    outfile_single_contigs = open(output.single_contig_assemblies, "w")
 
     for FILE in input:
 

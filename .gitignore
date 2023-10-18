@@ -2,3 +2,4 @@ pangenome
 assembly/container/assemblySC.sif
 assembly/.snakemake
 assembly/rulegraph.pdf
+facienda.md

@@ -2,16 +2,16 @@
 #
 ##############################
 
-project_directory: ./results
-output_prefix: pb_bernese
 samples: config/samples.tsv
+outdir: ./results
+output_prefix: pb_bernese
 
 ref:
   genome_size: 4.4m
   gbf: resources/H37Rv.gbf
 
-threads: 4
+bakta_db: resources/bakta_db
+
+threads_per_job: 4
 
 keep_intermediate: "Yes"
-
-mapreads: "No"

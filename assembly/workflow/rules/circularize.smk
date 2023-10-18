@@ -1,11 +1,11 @@
 
 rule circlator_mapreads:
     input: 
-        assembly = 'results/{sample}/assembly.fasta',
+        assembly = config["outdir"] + "/{sample}/assembly.fasta",
         reads = lambda wildcards: expand(samples[wildcards.sample].longread_fastq)
-    output: "results/{sample}/circlator/01.mapreads.bam"
+    output: config["outdir"] + "/{sample}/circlator/01.mapreads.bam"
     params:
-        threads = config["threads"]
+        threads = config["threads_per_job"]
 
     shell:
         """
@@ -14,10 +14,10 @@ rule circlator_mapreads:
         """
 
 rule circlator_bam2reads:
-    input: "results/{sample}/circlator/01.mapreads.bam"
-    output: "results/{sample}/circlator/02.bam2reads.fasta"
+    input: config["outdir"] + "/{sample}/circlator/01.mapreads.bam"
+    output: config["outdir"] +"/{sample}/circlator/02.bam2reads.fasta"
     params:
-        output_pref = "results/{sample}/circlator/02.bam2reads"
+        output_pref = config["outdir"]+ "/{sample}/circlator/02.bam2reads"
     shell:
         """
         circlator bam2reads {input} {params.output_pref} --discard_unmapped
@@ -25,10 +25,10 @@ rule circlator_bam2reads:
         """
 
 rule circlator_localassembly:
-    input: "results/{sample}/circlator/02.bam2reads.fasta"
-    output: "results/{sample}/circlator/03.assemble/assembly.fasta"
+    input: config["outdir"] + "/{sample}/circlator/02.bam2reads.fasta"
+    output: config["outdir"] + "/{sample}/circlator/03.assemble/assembly.fasta"
     params:
-        outdir = "results/{sample}/circlator/03.assemble",
+        outdir = config["outdir"] + "/{sample}/circlator/03.assemble",
         threads = config["threads"]
     shell:
         """
@@ -38,12 +38,12 @@ rule circlator_localassembly:
 
 rule circlator_merge:
     input: 
-        assembly = 'results/{sample}/assembly.fasta',
-        localassembly = "results/{sample}/circlator/03.assemble/assembly.fasta"
-    output: "results/{sample}/circlator/04.merge.fasta"
+        assembly = config["outdir"]  + "/{sample}/assembly.fasta",
+        localassembly = config["outdir"] + "/{sample}/circlator/03.assemble/assembly.fasta"
+    output: config["outdir"] + "/{sample}/circlator/04.merge.fasta"
     params:
-        threads = config["threads"],
-        output_pref = "results/{sample}/circlator/04.merge"
+        threads = config["threads_per_job"],
+        output_pref = config["outdir"] + "/{sample}/circlator/04.merge"
     shell:
         """
         circlator merge {input.assembly} {input.localassembly} {params.output_pref} --threads {params.threads}
@@ -51,10 +51,10 @@ rule circlator_merge:
         """
 
 rule circlator_clean:
-    input: "results/{sample}/circlator/04.merge.fasta"
-    output: "results/{sample}/circlator/05.clean.fasta"
+    input: config["outdir"] + "/{sample}/circlator/04.merge.fasta"
+    output: config["outdir"] + "/{sample}/circlator/05.clean.fasta"
     params:
-        output_pref = "results/{sample}/circlator/05.clean"
+        output_pref = config["outdir"] + "/{sample}/circlator/05.clean"
     shell:
         """
         circlator clean {input} {params.output_pref}
@@ -62,10 +62,10 @@ rule circlator_clean:
         """
 
 rule circlator_fixstart:
-    input: "results/{sample}/circlator/05.clean.fasta"
-    output: "results/{sample}/circlator/06.fixstart.fasta"
+    input: config["outdir"] + "/{sample}/circlator/05.clean.fasta"
+    output: config["outdir"] + "/{sample}/circlator/06.fixstart.fasta"
     params:
-        output_pref = "results/{sample}/circlator/06.fixstart"
+        output_pref = config["outdir"] + "/{sample}/circlator/06.fixstart"
     shell:
         """
         circlator fixstart {input} {params.output_pref}
@@ -74,12 +74,12 @@ rule circlator_fixstart:
         
 rule rename:
     input: 
-        assembly = "results/{sample}/circlator/06.fixstart.fasta"
+        assembly = config["outdir"] + "/{sample}/circlator/06.fixstart.fasta"
     params:
         prefix = "{sample}",
         keep_intermediate = config["keep_intermediate"]
 
-    output: "results/{sample}/assembly.circularized.renamed.fasta"
+    output: config["outdir"]  + "/{sample}/assembly.circularized.renamed.fasta"
     
     run:
 

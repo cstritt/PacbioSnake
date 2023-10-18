@@ -1,9 +1,9 @@
 rule longQC:
     input: lambda wildcards: samples[wildcards.sample].longread_fastq
-    output: "results/{sample}/longqc/QC_vals_longQC_sampleqc.json"
+    output: config["outdir"] + "/{sample}/longqc/QC_vals_longQC_sampleqc.json"
     params:
-        threads = config["threads"],
-        outfolder = "results/{sample}/longqc/"
+        threads = config["threads_per_job"],
+        outfolder = config["outdir"] + "/{sample}/longqc/"
 
     shell:
         """

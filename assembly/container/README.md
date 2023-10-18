@@ -34,8 +34,4 @@ conda env update --file environment.yml --prune
 conda-lock --mamba -f environment.yml -p linux-64
 conda-lock render -p linux-64 # allows using mamba create --file conda-linux-64.lock
 
-Problem: 1.6 gb container on gitlab? Building or loading container requires sudo...
-
-```
-sudo singularity build assemblySC.sif assemblySC.def
-```
+# The conda-linux-64.lock file is then used in assemblySC.def to build the container
