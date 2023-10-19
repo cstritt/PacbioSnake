@@ -8,7 +8,6 @@ class sample:
 samples = {}
 
 with open(config["samples"]) as f:
-    next(f)
     for line in f:
         fields = line.strip().split("\t")
         samples[fields[0]] = sample(fields) 

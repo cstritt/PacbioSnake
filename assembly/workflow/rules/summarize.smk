@@ -10,7 +10,7 @@ rule read_summary:
 
         for FILE in input:
 
-            sample = FILE.split("/")[1]
+            sample = FILE.split("/")[-3]
 
             d = json.load(open(FILE))
             d_flat = {}
@@ -52,7 +52,7 @@ rule read_summary:
 
 
 rule assembly_summaries:
-  input: expand("{outdir}/{sample}/assembly_info.txt", outdir = config["outdir"], sample = samples.keys())
+  input: expand("{outdir}/{sample}/flye/assembly_info.txt", outdir = config["outdir"], sample = samples.keys())
   output: 
     summaries = config["outdir"] + "/assembly_summaries.tsv",
     single_contig_assemblies = config["outdir"] + "/single_contig_samples.txt"
@@ -65,7 +65,7 @@ rule assembly_summaries:
 
     for FILE in input:
 
-      sample = FILE.split("/")[1]
+      sample = FILE.split("/")[-3]
       contig_count = 0
 
       with open(FILE) as f:

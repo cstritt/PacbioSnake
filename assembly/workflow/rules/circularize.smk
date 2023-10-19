@@ -1,7 +1,7 @@
 
 rule circlator_mapreads:
     input: 
-        assembly = config["outdir"] + "/{sample}/assembly.fasta",
+        assembly = config["outdir"] + "/{sample}/flye/assembly.fasta",
         reads = lambda wildcards: expand(samples[wildcards.sample].longread_fastq)
     output: config["outdir"] + "/{sample}/circlator/01.mapreads.bam"
     params:
@@ -29,7 +29,7 @@ rule circlator_localassembly:
     output: config["outdir"] + "/{sample}/circlator/03.assemble/assembly.fasta"
     params:
         outdir = config["outdir"] + "/{sample}/circlator/03.assemble",
-        threads = config["threads"]
+        threads = config["threads_per_job"]
     shell:
         """
         flye --pacbio-hifi {input} --out-dir {params.outdir} --genome-size 100k --threads {params.threads}
@@ -38,7 +38,7 @@ rule circlator_localassembly:
 
 rule circlator_merge:
     input: 
-        assembly = config["outdir"]  + "/{sample}/assembly.fasta",
+        assembly = config["outdir"]  + "/{sample}/flye/assembly.fasta",
         localassembly = config["outdir"] + "/{sample}/circlator/03.assemble/assembly.fasta"
     output: config["outdir"] + "/{sample}/circlator/04.merge.fasta"
     params:

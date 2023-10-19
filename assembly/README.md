@@ -1,43 +1,50 @@
 # Genome assembly workflow
 
-The user needs to modify two things to run the workflow on her samples:
+The genome assembly workflow includes the following tools/steps:
+  - [LongQC](https://doi.org/10.1534/g3.119.400864): Get some read summary statistics. The reads are not modified in any way before assembly, 
+  - [Flye](https://doi.org/10.1038/s41587-019-0072-8): Assembly.
+  - [circlator](https://doi.org/10.1186/s13059-015-0849-0): Reorient the assembly such that it begins with dnaA.
+  - [bakta](https://doi.org/10.1099/mgen.0.000685): Annotate the reoriented assembly.
+  - [minimap2](https://doi.org/10.1093/bioinformatics/bty191): Map the long reads back against the assembly. The resulting alignments can be used to check for inconsistencies between reads and assemblies.  
 
-- the file config/samples.tsv, which contains the sample names and the corresponding paths to the HiFi consensus reads. 
-- the file config/config.yaml, which contains global options for the analysis 
 
+# Run the pipeline
+The user needs to provide two things to run the workflow on her samples:
+- a config file with some global options for the analysis
+- a tab separate table, without header, that contains the sample names and the corresponding paths to the HiFi consensus reads. 
 
-## samples.tsv
-This is a tab-separated table with a header and two colums (see example): the first containing the sample names, which will be used to name the assemblies; the second with the absolute paths to the fastq files. 
-
-## config.yaml
+## config.yml
 In the file config/config.yaml some global parameters can be set:
 
 ```yaml
-
-samples: samples.inhouse.hifi.test.csv
-
-results_directory: ./results
+samples: config/samples.tsv
+outdir: ./results
 output_prefix: pb_bernese
 
 ref:
   genome_size: 4.4m
   gbf: resources/H37Rv.gbf
 
-threads: 4
+bakta_db: resources/bakta_db
+
+threads_per_job: 4
 
 keep_intermediate: "Yes"
 
 ```
 
+## samples.tsv
+This is a tab-separated table with no header and two colums (see example): the first containing the sample names, which will be used to name the assemblies; the second with the absolute paths to the fastq files. 
 
 
-## Dry-run
+
+## Snakemake dry run
+
 ```
-snakemake -n
+snakemake -n --configfile /path/to/config.yml
 ```
 
-
-## Run the workflow on scicore
+## Run the workflow on sciCORE
 
 Important: singularity containers most be given access to the file locations through the --bind argument. E.g. if the long reads are on /scicore/home/jean-jacques/reads/, add this location in the snakemake command (see also the full command below): 
 
@@ -60,17 +67,29 @@ ml snakemake/6.6.1-foss-2021a
 
 # Real run 
 snakemake \
- --config samples=1.5 \
- --config outdir=./results \
-
- --jobs 4 
- --use-singularity --singularity-args "--bind /scicore/home/gagneux/GROUP/tbresearch/genomes/IN_PROGRESS/PacBio_genomes/Gagneux --bind /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/ --bind /scratch" \
- --cluster "sbatch --job-name=pbassembly --cpus-per-task=4 --mem-per-cpu=4G --time=06:00:00 --qos=6hours --output=pbassembly.o%j --error=pbassembly.e%j"
+ --configfile /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/config.yml \
+ --jobs 4 \
+ --latency-wait 60 \
+ --use-singularity --singularity-args "--bind /scicore/home/gagneux/GROUP/tbresearch/genomes/IN_PROGRESS/PacBio_genomes/Gagneux --bind /scicore/home/gagneux/stritt0001 --bind /scratch" \
+ --cluster "sbatch --job-name=pbassembly --cpus-per-task=4 --mem-per-cpu=4G --time=06:00:00 --qos=6hours --output=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/pbassembly.o%j --error=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/pbassembly.e%j"
 
 
 # Leave the screen: CTRL+a+d
 
 # Return to the screen 
 screen -r assembly
+
+```
+
+# Output
+For each sample defined in the samples table, a folder is generated in the output directory. It contains: 
+
+```
+assembly.circularized.renamed.fasta
+bakta/
+circlator/
+flye/
+longqc/
+remapping/
 
 ```

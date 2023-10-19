@@ -1,5 +1,7 @@
 pangenome
 assembly/container/assemblySC.sif
 assembly/.snakemake
+assembly/.cache
 assembly/rulegraph.pdf
+assembly/resources/bakta_db
 facienda.md

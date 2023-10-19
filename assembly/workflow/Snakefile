@@ -1,5 +1,5 @@
 
-containerized: "container/assemblySMK.sif"
+containerized: "container/assemblySC.sif"
 
 include: "rules/common.smk"
 
@@ -19,5 +19,5 @@ rule all:
     input:
         config["outdir"] + "/read_summaries.tsv",
         config["outdir"] + "/assembly_summaries.tsv", 
-        expand(config["outdir"] + "/{sample}/{sample}.gff", sample = samples.keys()),
+        expand(config["outdir"] + "/{sample}/bakta/{sample}.gff3", sample = samples.keys()),
         expand(config["outdir"] + "/{sample}/remapping/longreads.bam", sample = samples.keys())
