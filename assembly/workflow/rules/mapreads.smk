@@ -3,7 +3,7 @@
 rule map_LR:
     input:
         reads = lambda wildcards: samples[wildcards.sample].longread_fastq,  
-        assembly = config["outdir"] + "/{sample}/assembly.circularized.renamed.fasta"
+        assembly = config["outdir"] + "/{sample}/{sample}.fasta"
     output: config["outdir"] + "/{sample}/remapping/longreads.bam"
     params:
         intermediate = config["outdir"] + "/{sample}/remapping/longreads.raw.bam"

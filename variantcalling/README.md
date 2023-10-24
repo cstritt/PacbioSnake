@@ -13,28 +13,24 @@ singularity pull docker://ghcr.io/pangenome/pggb:latest
 
 ## config/config.yaml
 ```yaml
-
-reference: 
-
-threads: 4
-
-output_dir: ./results
-
-pggb:
-  p: 99
-  s: 5k
-
+outdir: /home/cristobal/TB/projects/pacbio_microscale/results/variants/assembly
+samples: /home/cristobal/TB/projects/pacbio_microscale/results/variants/assembly/samples.tsv
+reference: N1426
+threads: 20
 ```
 
 ## Dry run
-snakemake -n
+```
+snakemake -n --configfile 
+```
 
 ## Run
 ```
 snakemake \
  --jobs 1 \
+ --configfile ~/TB/projects/pacbio_microscale/results/variants/assembly/config.yml \
  --latency-wait 60 \
  --use-conda --use-envmodules \
- --use-singularity --singularity-args "--bind /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/workflows --bind /scratch" \
- --cluster "sbatch --job-name=bernese_variants --cpus-per-task=20 --mem-per-cpu=1G --time=06:00:00 --qos=6hours --output=bernese_variants.o%j --error=bernese_variants.e%j"
+ --use-singularity --singularity-args "--bind /scicore/home/gagneux/stritt0001 --bind /scratch" \
+ --cluster "sbatch --job-name=pggb --cpus-per-task=20 --mem-per-cpu=1G --time=06:00:00 --qos=6hours --output=pggb.o%j --error=pggb.e%j"
 ```

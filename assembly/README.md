@@ -17,19 +17,22 @@ The user needs to provide two things to run the workflow on her samples:
 In the file config/config.yaml some global parameters can be set:
 
 ```yaml
-samples: config/samples.tsv
-outdir: ./results
-output_prefix: pb_bernese
+# REQUIRED
+samples: config/samples.tsv # Path to sample table, no header, tab-separated
+outdir: ./results # Path to output directory
+
+# OPTIONAL
+annotate: "Yes" # Annotate assembly with bakta Yes/No
 
 ref:
-  genome_size: 4.4m
-  gbf: resources/H37Rv.gbf
+  genome_size: 4.4m # 
+  gbf: resources/H37Rv.gbf # Used for bakta annotation step
 
-bakta_db: resources/bakta_db
+bakta_db: resources/bakta_db # Used for bakta annotation step
 
-threads_per_job: 4
-
-keep_intermediate: "Yes"
+threads_per_job: 4 # Should match cpus-per-task in the snakemake command
+ 
+keep_intermediate: "Yes" # Not implemented yet...
 
 ```
 
@@ -57,21 +60,24 @@ It's convenient to run snakemake in a screen, so we can do other things on scico
 
 ```
 # Open screen 
-screen -r assembly
+screen -R assembly
 
 # Load Snakemake module
 ml snakemake/6.6.1-foss-2021a 
 
 # Dry run 
+snakemake -n \
+ --configfile /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/config.yml
 
 
 # Real run 
 snakemake \
- --configfile /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/config.yml \
+ --configfile /scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/config.yml \
  --jobs 4 \
+ --keep-going \
  --latency-wait 60 \
  --use-singularity --singularity-args "--bind /scicore/home/gagneux/GROUP/tbresearch/genomes/IN_PROGRESS/PacBio_genomes/Gagneux --bind /scicore/home/gagneux/stritt0001 --bind /scratch" \
- --cluster "sbatch --job-name=pbassembly --cpus-per-task=4 --mem-per-cpu=4G --time=06:00:00 --qos=6hours --output=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/pbassembly.o%j --error=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/assembly/pbassembly.e%j"
+ --cluster "sbatch --job-name=pbassembly --cpus-per-task=4 --mem-per-cpu=4G --time=06:00:00 --qos=6hours --output=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/pbassembly.o%j --error=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/pbassembly.e%j"
 
 
 # Leave the screen: CTRL+a+d

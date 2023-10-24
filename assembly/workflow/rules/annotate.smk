@@ -1,6 +1,6 @@
 
 rule bakta:
-  input: config["outdir"] + "/{sample}/assembly.circularized.renamed.fasta"
+  input: config["outdir"] + "/{sample}/{sample}.fasta"
   output: config["outdir"] + "/{sample}/bakta/{sample}.gff3"
   params:
     bakta_db = config["bakta_db"],

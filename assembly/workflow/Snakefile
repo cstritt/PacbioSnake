@@ -9,15 +9,24 @@ include: "rules/assemble.smk"
 
 include: "rules/circularize.smk"
 
-include: "rules/annotate.smk"
+if config["annotate"] == "Yes":
+    include: "rules/annotate.smk"
 
 include: "rules/summarize.smk"
 
 include: "rules/mapreads.smk"
 
-rule all:
-    input:
-        config["outdir"] + "/read_summaries.tsv",
-        config["outdir"] + "/assembly_summaries.tsv", 
-        expand(config["outdir"] + "/{sample}/bakta/{sample}.gff3", sample = samples.keys()),
-        expand(config["outdir"] + "/{sample}/remapping/longreads.bam", sample = samples.keys())
+if config["annotate"] == "Yes":
+    rule all:
+        input:
+            config["outdir"] + "/read_summaries.tsv",
+            config["outdir"] + "/assembly_summaries.tsv", 
+            expand(config["outdir"] + "/{sample}/bakta/{sample}.gff3", sample = samples.keys()),
+            expand(config["outdir"] + "/{sample}/remapping/longreads.bam", sample = samples.keys())
+
+else:
+    rule all:
+        input:
+            config["outdir"] + "/read_summaries.tsv",
+            config["outdir"] + "/assembly_summaries.tsv", 
+            expand(config["outdir"] + "/{sample}/remapping/longreads.bam", sample = samples.keys())

@@ -6,10 +6,11 @@ import sys
 from Bio import SeqIO
 
 
-assemblies = sys.argv[1:]
+outdir = sys.argv[1]
+assemblies = sys.argv[2:]
 
-fasta_handle = open("results_sim/single_contig_assemblies.fasta", "w")
-discarded = open("results_sim/discarded_assemblies.txt", "w")
+fasta_handle = open(outdir + "/single_contig_assemblies.fasta", "w")
+discarded = open(outdir + "/discarded_assemblies.txt", "w")
 
 for ASSEMBLY in assemblies:
                     

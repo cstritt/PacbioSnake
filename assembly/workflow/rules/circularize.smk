@@ -79,7 +79,7 @@ rule rename:
         prefix = "{sample}",
         keep_intermediate = config["keep_intermediate"]
 
-    output: config["outdir"]  + "/{sample}/assembly.circularized.renamed.fasta"
+    output: config["outdir"]  + "/{sample}/{sample}.fasta"
     
     run:
 
