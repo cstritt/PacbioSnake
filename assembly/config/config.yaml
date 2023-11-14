@@ -11,6 +11,7 @@ ref:
   gbf: resources/H37Rv.gbf
 
 bakta_db: resources/bakta_db
+container: container/assemblySC.sif
 
 threads_per_job: 4
 
