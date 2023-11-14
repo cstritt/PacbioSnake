@@ -1,7 +1,6 @@
-
-containerized: "container/assemblySC.sif"
-
 include: "rules/common.smk"
+
+containerized: config["container"]
 
 include: "rules/readQC.smk"
 
