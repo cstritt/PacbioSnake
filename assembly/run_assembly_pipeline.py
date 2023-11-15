@@ -1,66 +1,70 @@
+#!/usr/bin/env python3
 
 import argparse
 import os
 import yaml
+import sys
 
 def get_args():
 
-    parser = argparse.ArgumentParser(
-        description='')
+    parser = argparse.ArgumentParser(description='Run PacBio HiFi assembly pipeline on sciCORE')
 
-    parser.add_argument(
-        '-c', '--configfile',
-        dest='config',
-        required=True,
-        help='.'
-        )
+    # Parameter groups
+    parser_io = parser.add_argument_group('INPUT/OUTPUT')
 
-    parser.add_argument(
-        '-j', '--njobs',
-        dest="win_size",
-        required=True, type=int, 
-        help='Window size.'
-        )
+    parser_cluster = parser.add_argument_group('CLUSTER CONFIGURATION')
 
-    parser.add_argument(
-        '-t',
-        dest='threads',
-        type=int, default=0,
-        help='Threads per job.'
-        )
+    # INPUT/OUTPUT
+    parser_io.add_argument('-s', '--samples', required=True, help='Path to tab-separeted table, no header, with sample name and path to fastq with HiFi reads.')
+    
+    parser_io.add_argument('-o', '--outdir', required=True, help='Output directory for the results.')
+
+
+    # CLUSTER CONFIG
+    parser_cluster.add_argument('-j', '--njobs', default='4', help='Number of jobs to run in parallel. [4]')
+
+    parser_cluster.add_argument('-t', '--threads', default='10', help='Threads per job. [10]' )
 
     args=parser.parse_args()
+
     return args
 
 
 def main():    
     
     args = get_args()
-
-    with open(args.config, 'r') as file:
-        config = yaml.safe_load(file)
-
-    
+   
     # Infer pipeline location from path of run_assembly_pipeline.py
+    pl_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    print(pl_path)
+
+    # Directories for which singularity needs to be given access
+    bind_dirs = [
+        "/scicore/home/gagneux/GROUP/tbresearch/genomes/IN_PROGRESS/PacBio_genomes/Gagneux",
+        "/scratch",
+        "/scicore/home/gagneux/GROUP/PacbioSnake_resources",
+        args.outdir,
+        pl_path
+        ]
     
-
-
+    singularity_args = "--bind " + " --bind ".join(bind_dirs)
 
     cmd = [
         "snakemake",
-        "--profile", "", 
-        "--snakefile", "/scicore/home/gagneux/GROUP/PacbioSnake/assembly/workflow/Snakefile",
-        "--directory", "/scicore/home/gagneux/GROUP/PacbioSnake/assembly",
-        "--configfile", "/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/config.yml",
-        "--jobs", "4",
-        "--latency-wait", "60", 
+        "--snakefile", pl_path + "/workflow/Snakefile",
+        "--directory", pl_path,
+        "--configfile", pl_path + "/config/config.yaml",
+        "--profile", pl_path + "/config/cluster_config.yaml", 
+        # Overwrite samples and outdir parameters
+        "--config", "samples=" + args.samples,
+        "--config", "outdir=" + args.outdir,
+        "--jobs", args.njobs,
         "--cleanup-shadow",
-        "--shadow-prefix", 
-        "--verbose",
-        "--use-singularity", "--singularity-args", "--bind /scicore/home/gagneux/GROUP/tbresearch/genomes/IN_PROGRESS/PacBio_genomes/Gagneux --bind /scicore/home/gagneux/stritt0001 --bind /scratch",
-        "--cluster", "sbatch --job-name=pbassembly --cpus-per-task=4 --mem-per-cpu=4G --time=06:00:00 --qos=6hours --output=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/pbassembly.o%j --error=/scicore/home/gagneux/stritt0001/TB/projects/pacbio_microscale/results/demo/pbassembly.e%j"
+        "--use-singularity", 
+        "--singularity-args" + " \"" + singularity_args + "\""        
     ]
 
+    #print(" ".join(cmd))
     os.system(" ".join(cmd))
     
 if __name__ == '__main__':
