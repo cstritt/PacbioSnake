@@ -8,7 +8,7 @@ The genome assembly workflow includes the following tools/steps:
   - [minimap2](https://doi.org/10.1093/bioinformatics/bty191): Map the long reads back against the assembly. The resulting alignments can be used to check for inconsistencies between reads and assemblies.  
 
 
-# Run the pipeline
+# Run the pipeline on sciCORE
 The user needs to provide two things to run the workflow on her samples:
 - a config file with some global options for the analysis
 - a tab separate table, without header, that contains the sample names and the corresponding paths to the HiFi consensus reads. 
@@ -29,6 +29,7 @@ ref:
   gbf: resources/H37Rv.gbf # Used for bakta annotation step
 
 bakta_db: resources/bakta_db # Used for bakta annotation step
+container: containers/assemblySMK.sif # Singularity container containing all reuquired software
 
 threads_per_job: 4 # Should match cpus-per-task in the snakemake command
  
