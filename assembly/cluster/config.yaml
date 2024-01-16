@@ -9,9 +9,9 @@ cluster:
     --output=logs/{rule}/{rule}-{wildcards}-%j.stdout
     --error=logs/{rule}/{rule}-{wildcards}-%j.stderr
 default-resources:
-  - partition=scicore
-  - qos=1day
-  - time=12:00:00
+  - partition='scicore'
+  - qos='1day'
+  - time='12:00:00'
   - mem_mb=20000
 restart-times: 3
 max-jobs-per-second: 10
