@@ -7,13 +7,15 @@ rule flye:
   threads: config["threads_per_job"]
   params:
     genome_size = config["ref"]["genome_size"],
-    outdir = config["outdir"] + "/{sample}/flye"
+    outdir = config["outdir"] + "/{sample}/flye",
+    iterations = config["assembly_iterations"]
 
   shell:
     """
     flye \
       --pacbio-hifi {input} \
       --genome-size {params.genome_size} \
+      --iterations {params.iterations} \
       --threads {threads} \
       --out-dir {params.outdir}
     """

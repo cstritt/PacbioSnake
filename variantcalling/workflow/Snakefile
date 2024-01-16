@@ -28,7 +28,7 @@ rule combine_assemblies:
 rule pggb:
     input: config["outdir"] + "/single_contig_assemblies.fasta"
     output: config["outdir"] + "/graph.smooth.final.gfa"
-    threads: 20
+    threads: config["threads"]
     params:
         nr_strains = len(samples),
         outdir = config["outdir"],
@@ -54,6 +54,7 @@ rule pggb:
 rule call_variants:
     input: config["outdir"] + "/graph.smooth.final.gfa"
     output: config["outdir"] + "/variants.vcf"
+    threads: config["threads"]
     params:
         reference = config["reference"]
     singularity: "container/pggb_latest.sif"
