@@ -2,7 +2,6 @@
 
 import argparse
 import os
-import yaml
 import sys
 
 def get_args():
