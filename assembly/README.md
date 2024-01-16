@@ -13,18 +13,14 @@ The user needs to provide two things to run the workflow on her samples:
 - a config file with some global options for the analysis
 - a tab separate table, without header, that contains the sample names and the corresponding paths to the HiFi consensus reads. 
 
-
-## Clone the directory
-
-
 ## Create conda environment containing snakemake and singularity
 ```
-conda env create -f config/environment.yml
+conda env create -f environment.yml
 
 ```
 
 
-## Run the pipeline
+## config.yml
 In the file config/config.yaml some global parameters can be set:
 
 ```yaml

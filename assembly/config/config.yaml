@@ -2,17 +2,15 @@
 #
 ##############################
 
-samples: "config/samples.tsv"
-outdir: "./results"
+samples: config/samples.tsv
+outdir: ./results
 
 ref:
-  genome_size: "4.4m"
-  gbf: "resources/H37Rv.gbf"
+  genome_size: 4.4m
+  gbf: resources/H37Rv.gbf
 
-bakta_db: "/scicore/home/gagneux/GROUP/PacbioSnake_resources/databases/bakta_db"
-container: "/scicore/home/gagneux/GROUP/PacbioSnake_resources/containers/assemblySC.sif"
-
-annotate: "No"
+bakta_db: /scicore/home/gagneux/GROUP/PacbioSnake_resources/databases/bakta_db
+container: /scicore/home/gagneux/GROUP/PacbioSnake_resources/containers/assemblySC.sif
 
 threads_per_job: 4
 
