@@ -7,5 +7,3 @@ assembly/resources/bakta_db
 facienda.md
 variantcalling/container/pggb_latest.sif
 variantcalling/.snakemake
-assembly/logs
-assembly/.fontconfig
